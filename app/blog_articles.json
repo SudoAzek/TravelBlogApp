@@ -2,13 +2,13 @@
   "data": [
     {
       "title": "G'day from Sydney",
-      "date": "August 2, 2019",
+      "date": "August 2, 2022",
       "views": 2687,
-      "rating": 4.4,
-      "image": "https://bitbucket.org/dmytrodanylyk/travel-blog-resources/raw/3436e16367c8ec2312a0644bebd2694d484eb047/images/sydney_image.jpg",
+      "rating": 4.5,
+      "image": "https://github.com/SudoAzek/TravelBlogApp/blob/main/app/src/main/res/drawable/sydney_image.jpg?raw=true",
       "author": {
-        "name": "Grayson Wells",
-        "avatar": "https://bitbucket.org/dmytrodanylyk/travel-blog-resources/raw/3436e16367c8ec2312a0644bebd2694d484eb047/avatars/avatar1.jpg"
+        "name": "Azamat Ochilov",
+        "avatar": "https://github.com/SudoAzek/TravelBlogApp/blob/main/app/src/main/res/drawable/avatar.jpg?raw=true"
       },
       "description": "G'day mate! Welcome to Sydney, where you come for the beaches, but stay for the restaurants, the culture and the good vibes (but also, the beaches). We promise we're friendly here, but between the one-way streets, our four different forms of public transport and the fact that our urban design is more 'bowl of spaghetti' than 'grid', we know it can all be a little bit confusing. Here's how to survive and thrive in the city, whether you're here for a few days, or the rest of your life.<br><br>Looking to take a break from city life? Head to these glorious campsites near Sydney, or stretch into the weekend on these short getaways. "
     }
