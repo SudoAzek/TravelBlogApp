@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "title": "G'day from Sydney",
+      "date": "August 2, 2022",
+      "views": 2687,
+      "rating": 4.5,
+      "image": "https://github.com/SudoAzek/TravelBlogApp/blob/main/app/src/main/res/drawable/sydney_image.jpg?raw=true",
+      "author": {
+        "name": "Azamat Ochilov",
+        "avatar": "https://github.com/SudoAzek/TravelBlogApp/blob/main/app/src/main/res/drawable/avatar.jpg?raw=true"
+      },
+      "description": "Australia is one of the most popular travel destinations in the world."
+    }
+  ]
+}
