@@ -2,6 +2,8 @@ package com.mezonworks.travelblog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -25,7 +27,6 @@ public class BlogDetailsActivity extends AppCompatActivity {
 //    public static final String IMAGE_URL = "https://github.com/SudoAzek/TravelBlogApp/blob/main/app/src/main/res/drawable/sydney_image.jpg?raw=true";
 //    public static final String AVATAR_URL = "https://github.com/SudoAzek/TravelBlogApp/blob/main/app/src/main/res/drawable/avatar.jpg?raw=true";
 
-
     private TextView textTitle;
     private TextView textDate;
     private TextView textAuthor;
@@ -37,6 +38,8 @@ public class BlogDetailsActivity extends AppCompatActivity {
     private ImageView imageMain;
 
     private ProgressBar progressBar;
+
+    private static final String EXTRAS_BLOG = "EXTRA_BLOGS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,9 @@ public class BlogDetailsActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         // start loading data
-        loadData();
+//        loadData();
+
+        showData(getIntent().getExtras().getParcelable(EXTRAS_BLOG));
 
 //        ImageView imageMain = findViewById(R.id.imageMain);
 ////        imageMain.setImageResource(R.drawable.sydney_image);
@@ -153,5 +158,10 @@ public class BlogDetailsActivity extends AppCompatActivity {
                 .transform(new CircleCrop())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageAvatar);
+    }
+    public static void startBlogDetailsActivity(Activity activity, Blog blog) {
+        Intent intent = new Intent(activity, BlogDetailsActivity.class);
+        intent.putExtra(EXTRAS_BLOG, blog);
+        activity.startActivity(intent);
     }
 }

@@ -1,8 +1,12 @@
 package com.mezonworks.travelblog.http;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Objects;
 
-public class Blog {
+public class Blog implements Parcelable {
+
     private String id;
     private Author author;
     private String title;
@@ -12,18 +16,45 @@ public class Blog {
     private int views;
     private float rating;
 
-
-    public String getId() {
-        return id;
+    protected Blog(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        date = in.readString();
+        image = in.readString();
+        description = in.readString();
+        views = in.readInt();
+        rating = in.readFloat();
+        author = in.readParcelable(Author.class.getClassLoader());
     }
 
-    public Author getAuthor() {
-        return author;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(date);
+        dest.writeString(image);
+        dest.writeString(description);
+        dest.writeInt(views);
+        dest.writeFloat(rating);
+        dest.writeParcelable(author, 0);
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    public static final Creator<Blog> CREATOR = new Creator<Blog>() {
+        @Override
+        public Blog createFromParcel(Parcel in) {
+            return new Blog(in);
+        }
+
+        @Override
+        public Blog[] newArray(int size) {
+            return new Blog[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -35,6 +66,10 @@ public class Blog {
 
     public String getImage() {
         return image;
+    }
+
+    public String getImageURL() {
+        return BlogHttpClient.BASE_URL + BlogHttpClient.PATH + getImage();
     }
 
     public String getDescription() {
@@ -49,9 +84,17 @@ public class Blog {
         return rating;
     }
 
-//    public String getImageURL() {
-//        return BlogHttpClient.BASE_URL + BlogHttpClient.PATH + getImage();
-//    }
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -73,3 +116,4 @@ public class Blog {
         return Objects.hash(id, author, title, date, image, description, views, rating);
     }
 }
+
