@@ -5,17 +5,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.SearchView;
 
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.mezonworks.travelblog.adapter.MainAdapter;
 import com.mezonworks.travelblog.http.Blog;
 import com.mezonworks.travelblog.http.BlogArticlesCallback;
 import com.mezonworks.travelblog.http.BlogHttpClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,10 +26,23 @@ public class MainActivity extends AppCompatActivity {
     private MainAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
 
+    private static final int SORT_TITLE = 0;
+    private static final int SORT_DATE = 1;
+
+    private int currentSort = SORT_DATE;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.sort) {
+                onSortClicked();
+            }
+            return false;
+        });
 
         adapter = new MainAdapter(blog -> BlogDetailsActivity.startBlogDetailsActivity(this, blog));
 
@@ -38,6 +54,40 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(this::loadData);
 
         loadData();
+
+        MenuItem searchItem = toolbar.getMenu().findItem(R.id.search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
+    }
+
+    private void onSortClicked() {
+        String[] items = {"Title", "Date"};
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Sort order")
+                .setSingleChoiceItems(items, currentSort, (dialog, which) -> {
+                    dialog.dismiss();
+                    currentSort = which;
+                    sortData();
+                }).show();
+    }
+
+    private void sortData() {
+        if (currentSort == SORT_TITLE) {
+            adapter.sortByTitle();
+        } else if (currentSort == SORT_DATE) {
+            adapter.sortByDate();
+        }
     }
 
     private void loadData() {
@@ -47,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(List<Blog> blogList) {
                 runOnUiThread(() -> {
                     refreshLayout.setRefreshing(false);
-                    adapter.submitList(blogList);
+                    adapter.setData(blogList);
+                    sortData();
                 });
             }
 

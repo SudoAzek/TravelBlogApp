@@ -17,11 +17,17 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.mezonworks.travelblog.R;
 import com.mezonworks.travelblog.http.Blog;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
 public class MainAdapter extends ListAdapter<Blog, MainAdapter.MainViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClicked(Blog blog);
     }
+
     private OnItemClickListener clickListener;
 
     public MainAdapter(OnItemClickListener clickListener) {
@@ -66,6 +72,35 @@ public class MainAdapter extends ListAdapter<Blog, MainAdapter.MainViewHolder> {
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageAvatar);
         }
+    }
+
+    private List<Blog> originalList = new ArrayList<>();
+
+    public void setData(List<Blog> list) {
+        originalList = list;
+        super.submitList(list);
+    }
+
+    public void filter(String query) {
+        List<Blog> filteredList = new ArrayList<>();
+        for (Blog blog : originalList) {
+            if (blog.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(blog);
+            }
+        }
+        submitList(filteredList);
+    }
+
+    public void sortByTitle() {
+        List<Blog> currentList = new ArrayList<>(getCurrentList());
+        Collections.sort(currentList, (o1, o2) -> o1.getTitle().compareTo(o2.getTitle()));
+        submitList(currentList);
+    }
+
+    public void sortByDate() {
+        List<Blog> currentList = new ArrayList<>(getCurrentList());
+        Collections.sort(currentList, (o1, o2) -> o1.getDateMillis().compareTo(o2.getDateMillis()));
+        submitList(currentList);
     }
 
     private static final DiffUtil.ItemCallback<Blog> DIFF_CALLBACK =
