@@ -106,13 +106,15 @@ public class MainAdapter extends ListAdapter<Blog, MainAdapter.MainViewHolder> {
     private static final DiffUtil.ItemCallback<Blog> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<Blog>() {
                 @Override
-                public boolean areItemsTheSame(@NonNull Blog oldItem, @NonNull Blog newItem) {
-                    return oldItem.getId().equals(newItem.getId());
+                public boolean areItemsTheSame(@NonNull Blog oldData,
+                                               @NonNull Blog newData) {
+                    return oldData.getId() == newData.getId();
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull Blog oldItem, @NonNull Blog newItem) {
-                    return oldItem.equals(newItem);
+                public boolean areContentsTheSame(@NonNull Blog oldData,
+                                                  @NonNull Blog newData) {
+                    return oldData.equals(newData);
                 }
             };
 }

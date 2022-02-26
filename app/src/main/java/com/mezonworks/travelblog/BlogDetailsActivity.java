@@ -62,79 +62,7 @@ public class BlogDetailsActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
 
-        // start loading data
-//        loadData();
-
         showData(getIntent().getExtras().getParcelable(EXTRAS_BLOG));
-
-//        ImageView imageMain = findViewById(R.id.imageMain);
-////        imageMain.setImageResource(R.drawable.sydney_image);
-//        Glide.with(this)
-//                .load(IMAGE_URL)
-//                .transition(DrawableTransitionOptions.withCrossFade())
-//                .into(imageMain);
-//
-//        ImageView imageAvatar = findViewById(R.id.imageAvatar);
-////        imageAvatar.setImageResource(R.drawable.avatar);
-//        Glide.with(this)
-//                .load(AVATAR_URL)
-//                .transform(new CircleCrop())
-//                .transition(DrawableTransitionOptions.withCrossFade())
-//                .into(imageAvatar);
-
-
-
-//        TextView textTitle = findViewById(R.id.textTitle);
-//        textTitle.setText("G'day from Sydney");
-//
-//        TextView textDate = findViewById(R.id.textDate);
-//        textDate.setText("August 2, 2022");
-//
-//        TextView textAuthor = findViewById(R.id.textAuthor);
-//        textAuthor.setText("Azamat Ochilov");
-//
-//        TextView textRating = findViewById(R.id.textRating);
-//        textRating.setText("4.4");
-//
-//        TextView textViews = findViewById(R.id.textViews);
-//        textViews.setText("(2687 views)");
-//
-//        TextView textDescription = findViewById(R.id.textDescription);
-//        textDescription.setText("Australia is one of the most popular travel destinations in the world.");
-//
-//        RatingBar ratingBar = findViewById(R.id.ratingBar);
-//        ratingBar.setRating(4.4f);
-//
-//        ImageView imageBack = findViewById(R.id.imageBack);
-//        imageBack.setOnClickListener(v -> finish());
-
-    }
-
-    private void loadData() {
-        BlogHttpClient.INSTANCE.loadBlogArticles(new BlogArticlesCallback() {
-            @Override
-            public void onSuccess(List<Blog> blogList) {
-                runOnUiThread(() -> showData(blogList.get(0)));
-            }
-
-            @Override
-            public void onError() {
-                // handle error
-                runOnUiThread(() -> showErrorSnackbar());
-            }
-        });
-    }
-
-    private void showErrorSnackbar() {
-        View rootView = findViewById(android.R.id.content);
-        Snackbar snackbar = Snackbar.make(rootView,
-                "Error during loading blog articles", Snackbar.LENGTH_INDEFINITE);
-        snackbar.setActionTextColor(getResources().getColor(R.color.orange500));
-        snackbar.setAction("Retry", view -> {
-            loadData();
-            snackbar.dismiss();
-        });
-        snackbar.show();
     }
 
     private void showData(Blog blogList) {

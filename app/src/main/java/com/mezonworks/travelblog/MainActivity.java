@@ -17,6 +17,8 @@ import com.mezonworks.travelblog.adapter.MainAdapter;
 import com.mezonworks.travelblog.http.Blog;
 import com.mezonworks.travelblog.http.BlogArticlesCallback;
 import com.mezonworks.travelblog.http.BlogHttpClient;
+import com.mezonworks.travelblog.repository.BlogRepository;
+import com.mezonworks.travelblog.repository.DataFromNetworkCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MainAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
+    private BlogRepository repository;
 
     private static final int SORT_TITLE = 0;
     private static final int SORT_DATE = 1;
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        repository = new BlogRepository(getApplicationContext());
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
@@ -51,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         refreshLayout = findViewById(R.id.refresh);
-        refreshLayout.setOnRefreshListener(this::loadData);
+        refreshLayout.setOnRefreshListener(this::loadDataFromNetwork);
 
-        loadData();
+        loadDataFromDatabase();
+        loadDataFromNetwork();
 
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.search);
         SearchView searchView = (SearchView) searchItem.getActionView();
@@ -90,34 +96,60 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadData() {
+    private void loadDataFromDatabase() {
+        repository.loadDataFromDatabase(blogList -> runOnUiThread(() -> {
+            adapter.setData(blogList);
+            sortData();
+        }));
+    }
+
+    private void loadDataFromNetwork() {
         refreshLayout.setRefreshing(true);
-        BlogHttpClient.INSTANCE.loadBlogArticles(new BlogArticlesCallback() {
+
+        repository.loadDataFromNetwork(new DataFromNetworkCallback() {
             @Override
             public void onSuccess(List<Blog> blogList) {
-                runOnUiThread(() -> {
-                    refreshLayout.setRefreshing(false);
-                    adapter.setData(blogList);
-                    sortData();
-                });
+                sortData();
+                adapter.setData(blogList);
+                refreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onError() {
-                runOnUiThread(() -> {
-                    refreshLayout.setRefreshing(false);
-                    showErrorSnackbar();
-                });
+                refreshLayout.setRefreshing(false);
+                showErrorSnackbar();
             }
         });
     }
+
+//    private void loadData() {
+//        refreshLayout.setRefreshing(true);
+//        BlogHttpClient.INSTANCE.loadBlogArticles(new BlogArticlesCallback() {
+//            @Override
+//            public void onSuccess(List<Blog> blogList) {
+//                runOnUiThread(() -> {
+//                    refreshLayout.setRefreshing(false);
+//                    adapter.setData(blogList);
+//                    sortData();
+//                });
+//            }
+//
+//            @Override
+//            public void onError() {
+//                runOnUiThread(() -> {
+//                    refreshLayout.setRefreshing(false);
+//                    showErrorSnackbar();
+//                });
+//            }
+//        });
+//    }
 
     private void showErrorSnackbar() {
         View rootView = findViewById(android.R.id.content);
         Snackbar snackbar = Snackbar.make(rootView, "Error during loading blog articles", Snackbar.LENGTH_INDEFINITE);
         snackbar.setActionTextColor(getResources().getColor(R.color.orange500));
         snackbar.setAction("Retry", v -> {
-            loadData();
+            loadDataFromNetwork();
             snackbar.dismiss();
         });
         snackbar.show();
